@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurateur d'Écrans LED Professionnel | TecaLED</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #00BCD4; /* Turquoise du logo */
+            --primary-dark: #00ACC1;
+            --secondary-color: #E53E3E; /* Rouge du logo */
+            --accent-color: #2196F3; /* Bleu du logo */
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-primary: #1e1e1e; /* Noir comme le logo */
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #00BCD4 0%, #E53E3E 50%, #2196F3 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 2px;
+            background: var(--secondary-color);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: 0.1em;
+        }
+
+        .logo-text span {
+            color: var(--primary-color);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-title span {
+            color: var(--accent-color);
+        }
+
+        .page-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 3rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .progress-bar {
+            margin-bottom: 2rem;
+        }
+
+        .progress-track {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            width: 11%;
+            transition: width 0.5s ease;
+            border-radius: 3px;
+        }
+
+        .progress-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .step.active {
+            opacity: 1;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--border-color);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-icon {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* Form */
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .form-section {
+            padding: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .section-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .client-source-indicator {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--success-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: none;
+        }
+
+        .client-source-indicator.active {
+            display: flex;
+        }
+
+        /* Form Elements */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper::after {
+            content: '\f107';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--text-secondary);
+        }
+
+        select.form-control {
+            appearance: none;
+            cursor: pointer;
+        }
+
+        /* Search Container */
+        .search-container {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .search-container input {
+            flex: 1;
+        }
+
+        .search-container .btn {
+            white-space: nowrap;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Radio and Checkbox Groups */
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .radio-item, .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .custom-radio, .custom-checkbox {
+            position: relative;
+            cursor: pointer;
+            padding-left: 2rem;
+            user-select: none;
+        }
+
+        .custom-radio::before, .custom-checkbox::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .custom-radio::before {
+            border-radius: 50%;
+        }
+
+        .custom-checkbox::before {
+            border-radius: 4px;
+        }
+
+        input[type="radio"]:checked + .custom-radio::before,
+        input[type="checkbox"]:checked + .custom-checkbox::before {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+        }
+
+        .custom-radio::after, .custom-checkbox::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .custom-checkbox::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 10px;
+            width: auto;
+            height: auto;
+            left: 4px;
+            top: 2px;
+            transform: none;
+        }
+
+        input[type="radio"]:checked + .custom-radio::after,
+        input[type="checkbox"]:checked + .custom-checkbox::after {
+            opacity: 1;
+        }
+
+        input[type="radio"], input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        /* Toggle Switch */
+        .toggle-options {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--border-color);
+            transition: 0.4s;
+            border-radius: 30px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background: var(--primary-color);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+        }
+
+        /* Range Slider */
+        .range-slider-container {
+            margin: 1rem 0;
+        }
+
+        .range-value {
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border-color);
+            outline: none;
+            margin: 1rem 0;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .range-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            border: none;
+        }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Special Options */
+        .special-options {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: var(--background);
+            border-radius: var(--border-radius);
+            border: 2px solid var(--border-color);
+            display: none;
+        }
+
+        .special-options.active {
+            display: block;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        /* Dimensions Group */
+        .dimensions-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .dimensions-group input {
+            flex: 1;
+            max-width: 120px;
+        }
+
+        .dimensions-group span {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        /* Transparency Preview */
+        .transparent-preview {
+            position: relative;
+            height: 100px;
+            background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .transparency-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            transition: opacity 0.3s ease;
+        }
+
+        .transparent-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* Form Navigation */
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem;
+            background: var(--background);
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Hint Text */
+        .hint {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* Search Results */
+        .search-results {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--background);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .client-result {
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .client-result:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Loading State */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .page-title {
+                font-size: 1.875rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .radio-group, .checkbox-group {
+                flex-direction: column;
+            }
+
+            .dimensions-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .dimensions-group input {
+                max-width: none;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            .form-navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .toggle-options {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-tv"></i>
+                    </div>
+                    <div class="logo-text">TECALED</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <h1 class="page-title">Configurateur d'<span>Écrans LED</span> TECALED</h1>
+            <p class="page-subtitle">Solutions professionnelles sur mesure pour vos projets d'affichage LED</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-steps">
+                        <div class="step active" data-step="0">
+                            <div class="step-icon">1</div>
+                            <div class="step-label">Client</div>
+                        </div>
+                        <div class="step" data-step="1">
+                            <div class="step-icon">2</div>
+                            <div class="step-label">Projet</div>
+                        </div>
+                        <div class="step" data-step="2">
+                            <div class="step-icon">3</div>
+                            <div class="step-label">Dimensions</div>
+                        </div>
+                        <div class="step" data-step="3">
+                            <div class="step-icon">4</div>
+                            <div class="step-label">Environnement</div>
+                        </div>
+                        <div class="step" data-step="4">
+                            <div class="step-icon">5</div>
+                            <div class="step-label">Installation</div>
+                        </div>
+                        <div class="step" data-step="5">
+                            <div class="step-icon">6</div>
+                            <div class="step-label">Fiabilité</div>
+                        </div>
+                        <div class="step" data-step="6">
+                            <div class="step-icon">7</div>
+                            <div class="step-label">Budget</div>
+                        </div>
+                        <div class="step" data-step="7">
+                            <div class="step-icon">8</div>
+                            <div class="step-label">Finalisation</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-container">
+                <form id="configForm">
+                    <!-- Section 0 : Recherche client KARLIA -->
+                    <div class="form-section active" id="section0">
+                        <div class="section-header">
+                            <div class="section-number">0</div>
+                            <div class="section-title">Recherche client dans KARLIA</div>
+                            <div class="client-source-indicator" id="clientSourceIndicator">
+                                <i class="fas fa-database"></i> Importé de KARLIA
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="clientSearch">Rechercher un client existant</label>
+                            <div class="search-container">
+                                <input type="text" class="form-control" id="clientSearch" placeholder="Nom du client ou de la société...">
+                                <button type="button" class="btn btn-primary" id="searchClientBtn">
+                                    <i class="fas fa-search"></i> Rechercher
+                                </button>
+                            </div>
+                            <span class="hint">Recherchez d'abord si le client existe déjà dans notre base KARLIA</span>
+                        </div>
+                        
+                        <div class="search-results" id="searchResults">
+                            <h4 style="margin-bottom: 1rem;">Résultats de la recherche</h4>
+                            <div id="clientResults"></div>
+                        </div>
+
+                        <!-- Informations client -->
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="clientName">Nom / Société *</label>
+                                <input type="text" class="form-control" id="clientName" name="clientName" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="clientEmail">Email *</label>
+                                <input type="email" class="form-control" id="clientEmail" name="clientEmail" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="clientPhone">Téléphone</label>
+                                <input type="text" class="form-control" id="clientPhone" name="clientPhone">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="clientAddress">Adresse complète</label>
+                                <textarea class="form-control" id="clientAddress" name="clientAddress" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section 1 : Usage de l'écran -->
+                    <div class="form-section" id="section1">
+                        <div class="section-header">
+                            <div class="section-number">1</div>
+                            <div class="section-title">Usage et environnement</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="screenPurpose">À quoi va servir l'écran ? *</label>
+                            <div class="select-wrapper">
+                                <select class="form-control" id="screenPurpose" name="screenPurpose" required>
+                                    <option value="">Sélectionnez l'usage principal...</option>
+                                    <option value="publicité">Publicité / Affichage commercial</option>
+                                    <option value="événement">Événement ponctuel</option>
+                                    <option value="sportif">Affichage sportif (stade, gymnase)</option>
+                                    <option value="concert">Concert / Spectacle</option>
+                                    <option value="vitrine">Vitrine / Showroom</option>
+                                    <option value="information">Information / Communication</option>
+                                    <option value="autre">Autre (précisez)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" id="otherPurposeGroup" style="display: none;">
+                            <label class="form-label" for="otherPurpose">Précisez l'usage</label>
+                            <input type="text" class="form-control" id="otherPurpose" name="otherPurpose">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Environnement d'installation *</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="indoor" name="environment" value="indoor" checked>
+                                    <label class="custom-radio" for="indoor">Intérieur</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="outdoor" name="environment" value="outdoor">
+                                    <label class="custom-radio" for="outdoor">Extérieur</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="semiOutdoor" name="environment" value="semi-outdoor">
+                                    <label class="custom-radio" for="semiOutdoor">Semi-extérieur</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Type d'installation *</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="fixe" name="installation" value="fixe" checked>
+                                    <label class="custom-radio" for="fixe">Fixe</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="mobile" name="installation" value="mobile">
+                                    <label class="custom-radio" for="mobile">Mobile</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="temporaire" name="installation" value="temporaire">
+                                    <label class="custom-radio" for="temporaire">Temporaire</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section 2 : Dimensions & Format -->
+                    <div class="form-section" id="section2">
+                        <div class="section-header">
+                            <div class="section-number">2</div>
+                            <div class="section-title">Dimensions et configuration</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Dimensions souhaitées *</label>
+                            <div class="dimensions-group">
+                                <input type="number" class="form-control" id="width" name="width" step="0.01" min="0.5" value="3" required>
+                                <span>×</span>
+                                <input type="number" class="form-control" id="height" name="height" step="0.01" min="0.5" value="2" required>
+                                <span>mètres</span>
+                            </div>
+                            <span class="hint">Largeur × Hauteur en mètres</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="numScreens">Nombre d'écrans *</label>
+                            <input type="number" class="form-control" id="numScreens" name="numScreens" min="1" value="1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Distance de visualisation *</label>
+                            <div class="select-wrapper">
+                                <select class="form-control" id="viewingDistance" name="viewingDistance" required>
+                                    <option value="">Sélectionnez la distance...</option>
+                                    <option value="proche">Très proche (1-3m)</option>
+                                    <option value="moyen">Distance moyenne (3-8m)</option>
+                                    <option value="loin">Longue distance (8-15m)</option>
+                                    <option value="très-loin">Très longue distance (15m+)</option>
+                                </select>
+                            </div>
+                            <span class="hint">Distance entre les spectateurs et l'écran</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="spaceConstraints">Contraintes d'espace particulières</label>
+                            <textarea class="form-control" id="spaceConstraints" name="spaceConstraints" placeholder="Hauteur de plafond, largeur maximale, obstacles, etc."></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Section 3 : Configuration avancée -->
+                    <div class="form-section" id="section3">
+                        <div class="section-header">
+                            <div class="section-number">3</div>
+                            <div class="section-title">Configuration technique</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">L'écran sera-t-il exposé au soleil directement ?</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="sunExposureYes" name="sunExposure" value="yes">
+                                    <label class="custom-radio" for="sunExposureYes">Oui, plein soleil</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="sunExposurePartial" name="sunExposure" value="partial">
+                                    <label class="custom-radio" for="sunExposurePartial">Partiellement</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="sunExposureNo" name="sunExposure" value="no" checked>
+                                    <label class="custom-radio" for="sunExposureNo">Non, à l'ombre</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Utilisation principale *</label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="dayUse" name="dayUse" checked>
+                                    <label class="custom-checkbox" for="dayUse">Utilisation de jour</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="nightUse" name="nightUse">
+                                    <label class="custom-checkbox" for="nightUse">Utilisation de nuit</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="mountingMethod">Méthode d'installation *</label>
+                            <div class="select-wrapper">
+                                <select class="form-control" id="mountingMethod" name="mountingMethod" required>
+                                    <option value="">Sélectionnez la méthode...</option>
+                                    <option value="mural">Fixation murale</option>
+                                    <option value="suspendu">Suspendu au plafond</option>
+                                    <option value="pied">Sur pied/structure au sol</option>
+                                    <option value="encastré">Encastré</option>
+                                    <option value="remorque">Sur remorque/véhicule</option>
+                                    <option value="autre">Autre méthode</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="budget">Budget estimé (€ HT)</label>
+                            <div class="select-wrapper">
+                                <select class="form-control" id="budget" name="budget">
+                                    <option value="">Préfère ne pas préciser</option>
+                                    <option value="5000">Moins de 5 000€</option>
+                                    <option value="10000">5 000€ - 10 000€</option>
+                                    <option value="20000">10 000€ - 20 000€</option>
+                                    <option value="50000">20 000€ - 50 000€</option>
+                                    <option value="100000">50 000€ - 100 000€</option>
+                                    <option value="plus">Plus de 100 000€</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="deadline">Délai souhaité</label>
+                            <input type="date" class="form-control" id="deadline" name="deadline">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="additionalInfo">Informations complémentaires</label>
+                            <textarea class="form-control" id="additionalInfo" name="additionalInfo" rows="4" placeholder="Toute autre information importante pour votre projet..."></textarea>
+                        </div>
+                    </div>
+                </form>
+                
+                <div class="form-navigation">
+                    <button type="button" class="btn btn-outline" id="prevBtn" style="display: none;">
+                        <i class="fas fa-arrow-left"></i> Précédent
+                    </button>
+                    <button type="button" class="btn btn-primary" id="nextBtn">
+                        Suivant <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;" form="configForm">
+                        <i class="fas fa-calculator"></i> Calculer ma configuration
+                    </button>
+                </div>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyse de votre demande en cours...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration du formulaire multi-étapes
+        class LEDConfigurator {
+            constructor() {
+                this.currentSection = 0;
+                this.totalSections = 8;
+                this.formData = {};
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.updateProgress();
+            }
+
+            bindEvents() {
+                // Navigation
+                document.getElementById('nextBtn').addEventListener('click', () => this.nextSection());
+                document.getElementById('prevBtn').addEventListener('click', () => this.prevSection());
+                
+                // Recherche client
+                document.getElementById('searchClientBtn').addEventListener('click', () => this.searchClient());
+                document.getElementById('clientSearch').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.searchClient();
+                    }
+                });
+
+                // Gestion des champs conditionnels
+                document.getElementById('screenPurpose').addEventListener('change', (e) => {
+                    const otherGroup = document.getElementById('otherPurposeGroup');
+                    otherGroup.style.display = e.target.value === 'autre' ? 'block' : 'none';
+                });
+
+                document.getElementById('screenType').addEventListener('change', (e) => {
+                    this.toggleScreenTypeOptions(e.target.value);
+                });
+
+                document.getElementById('mountingMethod').addEventListener('change', (e) => {
+                    const otherGroup = document.getElementById('otherMountingGroup');
+                    if (otherGroup) {
+                        otherGroup.style.display = e.target.value === 'autre' ? 'block' : 'none';
+                    }
+                });
+
+                // Gestion du champ dimensions
+                document.getElementById('dimensionsInconnues').addEventListener('change', (e) => {
+                    const widthField = document.getElementById('width');
+                    const heightField = document.getElementById('height');
+                    if (e.target.checked) {
+                        widthField.disabled = true;
+                        heightField.disabled = true;
+                        widthField.value = '';
+                        heightField.value = '';
+                    } else {
+                        widthField.disabled = false;
+                        heightField.disabled = false;
+                        widthField.value = '3';
+                        heightField.value = '2';
+                    }
+                });
+
+                // Gestion date événement critique
+                document.querySelectorAll('input[name="eventCritique"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        const dateField = document.getElementById('eventDate');
+                        dateField.style.display = e.target.value === 'oui' ? 'block' : 'none';
+                    });
+                });
+
+                // Range sliders
+                this.setupRangeSliders();
+
+                // Soumission du formulaire
+                document.getElementById('configForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.submitForm();
+                });
+            }
+
+            toggleScreenTypeOptions(screenType) {
+                // Masquer toutes les options spéciales d'abord
+                document.querySelectorAll('.special-options').forEach(option => {
+                    option.classList.remove('active');
+                });
+
+                // Afficher les options selon le type d'écran
+                switch(screenType) {
+                    case 'transparent':
+                        document.getElementById('transparentOptions').classList.add('active');
+                        break;
+                    case 'semi-transparent':
+                        document.getElementById('semiTransparentOptions').classList.add('active');
+                        break;
+                    case 'cube':
+                        document.getElementById('cubeOptions').classList.add('active');
+                        break;
+                    case 'plafond':
+                        document.getElementById('plafondOptions').classList.add('active');
+                        break;
+                    case 'sol':
+                        document.getElementById('solOptions').classList.add('active');
+                        break;
+                }
+
+                // Afficher options stade si applicable
+                const purpose = document.getElementById('screenPurpose').value;
+                if (purpose === 'stade') {
+                    document.getElementById('stadeOptions').classList.add('active');
+                }
+            }
+
+            setupRangeSliders() {
+                // Slider transparence
+                const transparenceSlider = document.getElementById('transparenceLevel');
+                const transparenceValue = document.getElementById('transparenceValue');
+                
+                if (transparenceSlider && transparenceValue) {
+                    transparenceSlider.addEventListener('input', (e) => {
+                        transparenceValue.textContent = e.target.value + '%';
+                    });
+                }
+            }
+
+            nextSection() {
+                if (this.validateCurrentSection()) {
+                    if (this.currentSection < this.totalSections - 1) {
+                        this.currentSection++;
+                        this.showSection(this.currentSection);
+                        this.updateProgress();
+                        this.updateNavigation();
+                    }
+                }
+            }
+
+            prevSection() {
+                if (this.currentSection > 0) {
+                    this.currentSection--;
+                    this.showSection(this.currentSection);
+                    this.updateProgress();
+                    this.updateNavigation();
+                }
+            }
+
+            showSection(index) {
+                // Masquer toutes les sections
+                document.querySelectorAll('.form-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+
+                // Afficher la section courante
+                const currentSection = document.getElementById(`section${index}`);
+                if (currentSection) {
+                    currentSection.classList.add('active');
+                }
+
+                // Mettre à jour les étapes
+                document.querySelectorAll('.step').forEach((step, i) => {
+                    if (i <= index) {
+                        step.classList.add('active');
+                    } else {
+                        step.classList.remove('active');
+                    }
+                });
+            }
+
+            updateProgress() {
+                const progress = ((this.currentSection + 1) / this.totalSections) * 100;
+                document.getElementById('progressFill').style.width = `${progress}%`;
+            }
+
+            updateNavigation() {
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                const submitBtn = document.getElementById('submitBtn');
+
+                prevBtn.style.display = this.currentSection > 0 ? 'inline-flex' : 'none';
+                
+                if (this.currentSection === this.totalSections - 1) {
+                    nextBtn.style.display = 'none';
+                    submitBtn.style.display = 'inline-flex';
+                } else {
+                    nextBtn.style.display = 'inline-flex';
+                    submitBtn.style.display = 'none';
+                }
+            }
+
+            validateCurrentSection() {
+                const currentSection = document.getElementById(`section${this.currentSection}`);
+                const requiredFields = currentSection.querySelectorAll('[required]');
+                let isValid = true;
+
+                requiredFields.forEach(field => {
+                    // Vérifier les champs texte, email et select
+                    if (field.type !== 'radio' && field.type !== 'checkbox') {
+                        if (!field.value.trim()) {
+                            field.style.borderColor = 'var(--error-color)';
+                            isValid = false;
+                        } else {
+                            field.style.borderColor = 'var(--border-color)';
+                        }
+                    }
+                    
+                    // Vérifier les groupes radio
+                    if (field.type === 'radio') {
+                        const radioGroup = currentSection.querySelectorAll(`input[name="${field.name}"]`);
+                        const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+                        if (!isChecked) {
+                            isValid = false;
+                        }
+                    }
+                });
+
+                // Validation spéciale pour les dimensions si pas "je ne sais pas"
+                if (this.currentSection === 2) {
+                    const dimensionsInconnues = document.getElementById('dimensionsInconnues').checked;
+                    if (!dimensionsInconnues) {
+                        const width = document.getElementById('width').value;
+                        const height = document.getElementById('height').value;
+                        if (!width || !height || width <= 0 || height <= 0) {
+                            isValid = false;
+                        }
+                    }
+                }
+
+                if (!isValid) {
+                    alert('Veuillez remplir tous les champs obligatoires avant de continuer.');
+                }
+
+                return isValid;
+            }
+
+            searchClient() {
+                const searchTerm = document.getElementById('clientSearch').value.trim();
+                if (!searchTerm) {
+                    alert('Veuillez saisir un terme de recherche');
+                    return;
+                }
+
+                // Simulation de recherche KARLIA
+                this.simulateKarliaSearch(searchTerm);
+            }
+
+            simulateKarliaSearch(term) {
+                const resultsContainer = document.getElementById('searchResults');
+                const clientResults = document.getElementById('clientResults');
+                
+                // Simulation de résultats
+                const mockResults = [
+                    {
+                        name: 'ACME Corporation',
+                        email: 'contact@acme-corp.fr',
+                        phone: '01 23 45 67 89',
+                        address: '123 Rue de la République, 75001 Paris'
+                    },
+                    {
+                        name: 'Tech Solutions SARL',
+                        email: 'info@techsolutions.fr',
+                        phone: '04 56 78 90 12',
+                        address: '456 Avenue des Champs, 69000 Lyon'
+                    }
+                ];
+
+                // Filtrer les résultats simulés
+                const filteredResults = mockResults.filter(client => 
+                    client.name.toLowerCase().includes(term.toLowerCase()) ||
+                    client.email.toLowerCase().includes(term.toLowerCase())
+                );
+
+                if (filteredResults.length > 0) {
+                    clientResults.innerHTML = filteredResults.map(client => `
+                        <div class="client-result" onclick="configurator.selectClient(${JSON.stringify(client).replace(/"/g, '&quot;')})">
+                            <strong>${client.name}</strong><br>
+                            <small>${client.email} • ${client.phone}</small><br>
+                            <small>${client.address}</small>
+                        </div>
+                    `).join('');
+                    resultsContainer.classList.add('active');
+                } else {
+                    clientResults.innerHTML = '<p>Aucun client trouvé. Vous pouvez créer un nouveau client en remplissant les informations ci-dessous.</p>';
+                    resultsContainer.classList.add('active');
+                }
+            }
+
+            selectClient(client) {
+                document.getElementById('clientName').value = client.name;
+                document.getElementById('clientEmail').value = client.email;
+                document.getElementById('clientPhone').value = client.phone;
+                document.getElementById('clientAddress').value = client.address;
+                
+                document.getElementById('searchResults').classList.remove('active');
+                document.getElementById('clientSourceIndicator').classList.add('active');
+            }
+
+            submitForm() {
+                if (!this.validateCurrentSection()) {
+                    return;
+                }
+
+                // Collecter toutes les données du formulaire
+                const formData = new FormData(document.getElementById('configForm'));
+                const data = Object.fromEntries(formData.entries());
+                
+                // Ajouter les checkboxes et autres données spéciales
+                data.dayUse = document.getElementById('dayUse').checked;
+                data.nightUse = document.getElementById('nightUse').checked;
+                data.dimensionsInconnues = document.getElementById('dimensionsInconnues').checked;
+                
+                // Collecter les services
+                const services = [];
+                document.querySelectorAll('input[name="services"]:checked').forEach(service => {
+                    services.push(service.value);
+                });
+                data.services = services;
+                
+                // Collecter les objectifs semi-transparents
+                const semiObjectifs = [];
+                document.querySelectorAll('input[name="semiObjectif"]:checked').forEach(obj => {
+                    semiObjectifs.push(obj.value);
+                });
+                data.semiObjectifs = semiObjectifs;
+                
+                console.log('Données du formulaire:', data);
+                
+                // Afficher le loading
+                document.getElementById('loading').classList.add('active');
+                
+                // Simuler l'envoi des données
+                setTimeout(() => {
+                    this.sendToN8N(data);
+                }, 2000);
+            }
+
+            async sendToN8N(data) {
+                try {
+                    // URL de ton webhook - À REMPLACER par ton URL N8N réelle
+                    const response = await fetch('webhook.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            timestamp: new Date().toISOString(),
+                            formData: data
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok && result.success) {
+                        this.showSuccessMessage(result.project_id);
+                    } else {
+                        throw new Error(result.error || 'Erreur lors de l\'envoi');
+                    }
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    this.showErrorMessage();
+                } finally {
+                    document.getElementById('loading').classList.remove('active');
+                }
+            }
+
+            showSuccessMessage(projectId) {
+                alert(`Votre demande a été envoyée avec succès !\n\nRéférence projet : ${projectId}\n\nNous vous contacterons rapidement avec une proposition détaillée.`);
+            }
+
+            showErrorMessage() {
+                alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer ou nous contacter directement.');
+            }
+        }
+
+        // Initialiser le configurateur
+        const configurator = new LEDConfigurator();
+    </script>
+</body>
+</html>
